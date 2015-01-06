@@ -1,0 +1,78 @@
+__author__ = 'Alexandr Kurlov'
+from flask import request, redirect
+import requests
+import json
+import config
+
+class iHealth():
+    """ A basic class of iHealth API handler """
+
+    def __init__(self, client_id, client_secret, redirect_uri):
+        self.access_token = ''
+        self.refresh_token = ''
+        self.user_id = ''
+        self.client_id = client_id
+        self.client_secret = client_secret
+        self.redirect_uri = redirect_uri
+        self.auth_url = 'http://sandboxapi.ihealthlabs.com/OpenApiV2/OAuthv2/userauthorization/'
+        self.user_url = 'http://sandboxapi.ihealthlabs.com/openapiv2/user/'
+        self.app_url = 'http://sandboxapi.ihealthlabs.com/openapiv2/application/'
+        self.response_type = 'code'  # default value for response_type
+        self.APIName = 'OpenApiBP'  # an array of target API
+        self.RequiredAPIName = 'OpenApiBP'  # it is must be selected for the authentication page
+        self.IsNew = 'true'  # the system will be auto redirected to the sign up page
+
+    def authorize(self):
+        payload = {'client_id': self.client_id, 'response_type': self.response_type,
+                   'redirect_uri': self.redirect_uri, 'APIName': self.APIName,
+                   'RequiredAPIName': self.RequiredAPIName, 'IsNew': self.IsNew}
+        r = requests.get(self.auth_url, params=payload)
+        return r
+
+    def callback(self):
+        code = self.get_code()
+        grant_type = 'authorization_code'   # is currently the only supported value
+        payload = {'code': code, 'client_id': self.client_id, 'grant_type': grant_type,
+                   'client_secret': self.client_secret, 'redirect_uri': self.redirect_uri}
+        r = requests.get(self.auth_url, params=payload)
+        self.access_token, self.refresh_token = self.get_tokens(r.text)
+        self.user_id = self.get_user_id(r.text)
+        return r.text
+
+    def get_code(self):
+        if 'code' not in request.args:
+            return None
+        return request.args['code']
+
+    def get_tokens(self, data):
+        resp = json.loads(data)
+        if resp['AccessToken'] and resp['RefreshToken']:
+            return resp['AccessToken'], resp['RefreshToken']
+        else:
+            return None, None # this should be handled as an error
+
+    def get_user_id(self, data):
+        resp = json.loads(data)
+        if resp['UserID']:
+            return resp['UserID']
+        else:
+            return None
+
+    def get_blood_pressure(self):
+        base_url = self.user_url+str(self.user_id)+'/bp/'
+        BP = config.DATA_TYPES['OpenApiBP']
+        payload = {'client_id': self.client_id, 'client_secret': self.client_secret,
+                   'access_token': self.access_token, 'redirect_uri': self.redirect_uri,
+                   'sc': BP['sc'], 'sv': BP['sv']}
+        r = requests.get(base_url, params=payload)
+        return r.text
+
+    def get_weight(self):
+        base_url = self.user_url+str(self.user_id)+'/weight/'
+        Weight = config.DATA_TYPES['OpenApiWeight']
+        payload = {'client_id': self.client_id, 'client_secret': self.client_secret,
+                   'access_token': self.access_token, 'redirect_uri': self.redirect_uri,
+                   'sc': Weight['sc'], 'sv': Weight['sv']}
+        r = requests.get(base_url, params=payload)
+        return r.text
+
