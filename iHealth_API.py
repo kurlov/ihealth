@@ -1,11 +1,11 @@
 from flask import Flask, redirect
 from iHealth import iHealth
-import config
+import config as cfg
 
 app = Flask(__name__)
-client_id = config.CLIENT_ID
-client_secret = config.CLIENT_SECRET
-callback = config.CALLBACK_URI
+client_id = cfg.CLIENT_ID
+client_secret = cfg.CLIENT_SECRET
+callback = cfg.CALLBACK_URI
 api = iHealth(client_id, client_secret, callback)
 
 @app.route('/')

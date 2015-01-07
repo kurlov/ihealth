@@ -2,7 +2,7 @@ __author__ = 'Alexandr Kurlov'
 from flask import request, redirect
 import requests
 import json
-import config
+import config as cfg
 
 class iHealth():
     """ A basic class of iHealth API handler """
@@ -14,12 +14,12 @@ class iHealth():
         self.client_id = client_id
         self.client_secret = client_secret
         self.redirect_uri = redirect_uri
-        self.auth_url = 'http://sandboxapi.ihealthlabs.com/OpenApiV2/OAuthv2/userauthorization/'
-        self.user_url = 'http://sandboxapi.ihealthlabs.com/openapiv2/user/'
-        self.app_url = 'http://sandboxapi.ihealthlabs.com/openapiv2/application/'
+        self.auth_url = cfg.AUTH_URL
+        self.user_url = cfg.USER_DATA_URL
+        self.app_url = cfg.ALL_DATA_URL
         self.response_type = 'code'  # default value for response_type
-        self.APIName = 'OpenApiBP'  # an array of target API
-        self.RequiredAPIName = 'OpenApiBP'  # it is must be selected for the authentication page
+        self.APIName = 'OpenApiBP OpenApiWeight OpenApiActivity OpenApiBG OpenApiSleep OpenApiSpO2 OpenApiUserInfo'  # an array of target API
+        self.RequiredAPIName = 'OpenApiBP OpenApiWeight OpenApiActivity OpenApiBG OpenApiSleep OpenApiSpO2 OpenApiUserInfo'  # it is must be selected for the authentication page
         self.IsNew = 'true'  # the system will be auto redirected to the sign up page
 
     def authorize(self):
@@ -60,7 +60,7 @@ class iHealth():
 
     def get_blood_pressure(self):
         base_url = self.user_url+str(self.user_id)+'/bp/'
-        BP = config.DATA_TYPES['OpenApiBP']
+        BP = cfg.DATA_TYPES['OpenApiBP']
         payload = {'client_id': self.client_id, 'client_secret': self.client_secret,
                    'access_token': self.access_token, 'redirect_uri': self.redirect_uri,
                    'sc': BP['sc'], 'sv': BP['sv']}
@@ -69,7 +69,7 @@ class iHealth():
 
     def get_weight(self):
         base_url = self.user_url+str(self.user_id)+'/weight/'
-        Weight = config.DATA_TYPES['OpenApiWeight']
+        Weight = cfg.DATA_TYPES['OpenApiWeight']
         payload = {'client_id': self.client_id, 'client_secret': self.client_secret,
                    'access_token': self.access_token, 'redirect_uri': self.redirect_uri,
                    'sc': Weight['sc'], 'sv': Weight['sv']}
