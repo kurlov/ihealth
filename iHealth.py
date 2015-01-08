@@ -76,3 +76,21 @@ class iHealth():
         r = requests.get(base_url, params=payload)
         return r.text
 
+    def get_bg(self):
+        pass
+
+    def get_blood_oxygen(self):
+        pass
+
+    def get_activity_report(self):
+        pass
+
+    def get_sleep_report(self):
+        pass
+
+    def get_food(self):
+        pass
+
+    def get_sport_report(self):
+        pass
+
