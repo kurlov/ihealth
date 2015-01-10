@@ -77,10 +77,17 @@ class iHealth():
         return r.text
 
     def get_bg(self):
-        pass
+        base_url = self.user_url+str(self.user_id)+'/glucose/'
+        Weight = cfg.DATA_TYPES['OpenApiBG']
+        payload = {'client_id': self.client_id, 'client_secret': self.client_secret,
+                   'access_token': self.access_token, 'redirect_uri': self.redirect_uri,
+                   'sc': Weight['sc'], 'sv': Weight['sv']}
+        r = requests.get(base_url, params=payload)
+        return r.text
 
     def get_blood_oxygen(self):
         pass
+
 
     def get_activity_report(self):
         pass
