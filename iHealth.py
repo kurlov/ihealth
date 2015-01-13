@@ -87,24 +87,30 @@ class iHealth():
 
     def get_blood_oxygen(self):
         base_url = self.user_url+str(self.user_id)+'/spo2/'
-        SpO2 = cfg.DATA_TYPES['OpenApiSpO2']
+        spO2 = cfg.DATA_TYPES['OpenApiSpO2']
         payload = {'client_id': self.client_id, 'client_secret': self.client_secret,
                    'access_token': self.access_token, 'redirect_uri': self.redirect_uri,
-                   'sc': SpO2['sc'], 'sv': SpO2['sv']}
+                   'sc': spO2['sc'], 'sv': spO2['sv']}
         r = requests.get(base_url, params=payload)
         return r.text
 
     def get_activity_report(self):
         base_url = self.user_url+str(self.user_id)+'/activity/'
-        Activity = cfg.DATA_TYPES['OpenApiActivity']
+        activity = cfg.DATA_TYPES['OpenApiActivity']
         payload = {'client_id': self.client_id, 'client_secret': self.client_secret,
                    'access_token': self.access_token, 'redirect_uri': self.redirect_uri,
-                   'sc': Activity['sc'], 'sv': Activity['sv']}
+                   'sc': activity['sc'], 'sv': activity['sv']}
         r = requests.get(base_url, params=payload)
         return r.text
 
     def get_sleep_report(self):
-        pass
+        base_url = self.user_url+str(self.user_id)+'/sleep/'
+        sleep = cfg.DATA_TYPES['OpenApiSleep']
+        payload = {'client_id': self.client_id, 'client_secret': self.client_secret,
+                   'access_token': self.access_token, 'redirect_uri': self.redirect_uri,
+                   'sc': sleep['sc'], 'sv': sleep['sv']}
+        r = requests.get(base_url, params=payload)
+        return r.text
 
     def get_food(self):
         pass
