@@ -122,5 +122,11 @@ class iHealth():
         return r.text
 
     def get_sport_report(self):
-        pass
+        base_url = self.user_url+str(self.user_id)+'/sport/'
+        sport = cfg.DATA_TYPES['OpenApiActivity']
+        payload = {'client_id': self.client_id, 'client_secret': self.client_secret,
+                   'access_token': self.access_token, 'redirect_uri': self.redirect_uri,
+                   'sc': sport['sc'], 'sv': sport['sv']}
+        r = requests.get(base_url, params=payload)
+        return r.text
 
