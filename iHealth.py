@@ -113,6 +113,7 @@ class iHealth():
         return r.text
 
     def get_food(self):
+        #seems like it is UserInfo. It does not covered by iHealth doc.
         base_url = self.user_url+str(self.user_id)+'/food/'
         food = cfg.DATA_TYPES['OpenApiUserInfo']
         payload = {'client_id': self.client_id, 'client_secret': self.client_secret,
